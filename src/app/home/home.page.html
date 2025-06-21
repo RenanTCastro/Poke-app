@@ -6,6 +6,31 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <p>Hello World</p>
+<ion-content [fullscreen]="true" class="home-container">
+  <ion-item class="search-bar">
+    <ion-input
+      [(ngModel)]="search"
+      placeholder="Bulbasaur..."
+      type="text"
+      class="search-input"
+    ></ion-input>
+    <ion-icon name="search-outline" slot="end" class="search-icon" (click)="searchByPokemon()"></ion-icon>
+  </ion-item>
+
+  <p class="home-title">Pokémons</p>
+  <div class="grid-cards" *ngIf="!loading">
+    <app-card-info
+      *ngFor="let p of filteredPokemons"
+      [name]="p.name"
+      [id]="p.id"
+      [image]="p.image"
+    ></app-card-info>
+  </div>
+
+  <div *ngIf="loading" class="loading-msg">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Buscando Pokémon...</p>
+  </div>
+
+  <p *ngIf="searchError && !loading" class="error-msg">Nenhum pokémon não encontrado :/</p>
 </ion-content>

@@ -1,0 +1,31 @@
+.pokemon-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid #3761A8;
+    color: #3761A8;
+    background-color: #fff;
+}
+
+.pokemon-favorite-icon {
+    width: 100%;
+    text-align: end;
+    margin: 10px 25px 0 0;
+}
+
+.pokemon-image {
+    width: 100px;
+    height: 100px;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    margin: -15px 0;
+}
+
+.pokemon-card-name{
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: capitalize;
+    margin: 0;
+}

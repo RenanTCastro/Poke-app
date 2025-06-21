@@ -1,0 +1,10 @@
+<ion-card class="pokemon-card">
+  <div class="pokemon-favorite-icon">
+    <ion-icon name="heart-outline" size="large"/>
+  </div>
+
+  <img [src]="image" alt="{{ name }}" class="pokemon-image" />
+
+  <p class="pokemon-card-name">{{ name }}</p>
+  <p class="pokemon-card-id">#{{ id }}</p>
+</ion-card>

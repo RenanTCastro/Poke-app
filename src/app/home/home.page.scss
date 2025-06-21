@@ -4,8 +4,65 @@
   align-items: center;
   width: 100%;
   height: 100%;
+  background-color: white;
 }
 
 .logo-header{
   width: 120px;
+}
+
+.home-title{
+  font-size: 20px;
+  font-weight: 600;
+  color: #3761A8;
+  margin: 20px 0 0 20px;
+}
+
+.home-container{
+  --background: #F4F9FD;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.search-bar {
+  border: 1.5px solid #3761A8;
+  border-radius: 5px;
+  margin: 16px;
+  background: white;
+  --highlight-color-focused: transparent;
+  --border-color: transparent;
+  --box-shadow: none;
+}
+
+.search-input {
+  color: #3761A8;
+  font-size: 18px;
+}
+
+.search-icon {
+  color: #3761A8;
+  font-size: 22px;
+}
+
+.loading-msg {
+  width: 100%;
+  text-align: center;
+  font-size: 18px;
+  padding: 40px 0;
+  color: #7a95c5;
+
+  ion-spinner {
+    margin-bottom: 8px;
+    color: #7a95c5;
+  }
+}
+
+.error-msg{
+  margin-top: 30px;
+  text-align: center;
+  color: #7a95c5;
+  font-size: 18px;
 }
