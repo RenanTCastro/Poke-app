@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { PokeapiService } from '../services/pokeapi.service';
 import { CardInfoComponent } from '../components/card-info/card-info.component';
-import { IonHeader, IonToolbar, IonContent, IonItem, IonInput, IonIcon, IonSpinner} from '@ionic/angular/standalone';
+import { IonHeader, IonToolbar, IonContent, IonItem, IonInput, IonIcon, IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent} from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
 import { searchOutline, radioButtonOnOutline, radioButtonOffOutline } from 'ionicons/icons';
@@ -23,7 +23,7 @@ interface PokemonCard {
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [FormsModule, CommonModule, IonHeader, IonToolbar, IonContent,IonSpinner, IonItem, IonInput, IonIcon, CardInfoComponent],
+  imports: [FormsModule, CommonModule, IonHeader, IonToolbar, IonContent,IonSpinner, IonInfiniteScroll, IonInfiniteScrollContent, IonItem, IonInput, IonIcon, CardInfoComponent],
 })
 
 export class HomePage implements OnInit{
@@ -45,22 +45,7 @@ export class HomePage implements OnInit{
   ngOnInit() {
     const saved = localStorage.getItem('favoritePokemons');
     this.favorites = new Set(saved ? JSON.parse(saved) : []);
-
-    this.pokeapi.getPokemons(10).subscribe((res) => {
-      const resultados = res.results;
-
-      this.allPokemons = resultados.map((p:PokemonsData)=>{
-        const pokemonId = p.url.split('/').filter(Boolean).pop();
-
-        return {
-          id: pokemonId!,
-          name: p.name,
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`,
-        }
-      });
-
-      this.filteredPokemons = [...this.allPokemons];
-    })
+    this.loadPokemons();
   }
 
   toggleFavorite(pokemonId: string) {
@@ -112,4 +97,36 @@ export class HomePage implements OnInit{
       }
     });
   }
+
+
+  limit: number = 10;
+  offset: number = 0;
+  hasMore: boolean = true;
+
+  loadPokemons(event?: any) {
+  this.pokeapi.getPokemons(this.limit, this.offset).subscribe((res) => {
+    const novosPokemons = res.results.map((p: PokemonsData) => {
+      const id = p.url.split('/').filter(Boolean).pop();
+      return {
+        id: id!,
+        name: p.name,
+        image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+      };
+    });
+
+    this.allPokemons = [...this.allPokemons, ...novosPokemons];
+    this.filteredPokemons = [...this.allPokemons];
+
+    this.offset += this.limit;
+
+    if (event) {
+      event.target.complete();
+    }
+
+    if (novosPokemons.length < this.limit) {
+      this.hasMore = false;
+    }
+  });
+}
+
 }
