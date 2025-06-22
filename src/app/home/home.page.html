@@ -17,6 +17,11 @@
     <ion-icon name="search-outline" slot="end" class="search-icon" (click)="searchByPokemon()"></ion-icon>
   </ion-item>
 
+  <div (click)="toggleFavoritesFilter()" class="home-favorite-toggle">
+    <p>Somente favoritos</p>
+    <ion-icon [name]="showFavoritesOnly ? 'radio-button-on-outline' : 'radio-button-off-outline'"></ion-icon>
+  </div>
+  
   <p class="home-title">Pokémons</p>
   <div class="grid-cards" *ngIf="!loading">
     <app-card-info
@@ -24,6 +29,8 @@
       [name]="p.name"
       [id]="p.id"
       [image]="p.image"
+      [isFavorite]="isFavorite(p.id)"
+      (toggle)="toggleFavorite($event)"
     ></app-card-info>
   </div>
 

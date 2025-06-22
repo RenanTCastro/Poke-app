@@ -6,7 +6,7 @@ import { CardInfoComponent } from '../components/card-info/card-info.component';
 import { IonHeader, IonToolbar, IonContent, IonItem, IonInput, IonIcon, IonSpinner} from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { searchOutline } from 'ionicons/icons';
+import { searchOutline, radioButtonOnOutline, radioButtonOffOutline } from 'ionicons/icons';
 
 interface PokemonsData {
   name: string;
@@ -32,22 +32,30 @@ export class HomePage implements OnInit{
   searchError: boolean = false;
   allPokemons: PokemonCard[] = [];
   filteredPokemons: PokemonCard[] = [];
+  
+  favorites: Set<string> = new Set();
+  showFavoritesOnly: boolean = false;
 
   constructor(private pokeapi: PokeapiService) {
-    addIcons({ searchOutline })
-  }
+    addIcons({ searchOutline, radioButtonOnOutline, radioButtonOffOutline })
+  } 
+
+  isFavorite(pokemonId: string): boolean { return this.favorites.has(pokemonId) }
 
   ngOnInit() {
+    const saved = localStorage.getItem('favoritePokemons');
+    this.favorites = new Set(saved ? JSON.parse(saved) : []);
+
     this.pokeapi.getPokemons(10).subscribe((res) => {
       const resultados = res.results;
 
       this.allPokemons = resultados.map((p:PokemonsData)=>{
         const pokemonId = p.url.split('/').filter(Boolean).pop();
-        
+
         return {
           id: pokemonId!,
           name: p.name,
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`,
         }
       });
 
@@ -55,12 +63,32 @@ export class HomePage implements OnInit{
     })
   }
 
-    
+  toggleFavorite(pokemonId: string) {
+    if (this.favorites.has(pokemonId)) {
+      this.favorites.delete(pokemonId);
+    } else {
+      this.favorites.add(pokemonId);
+    }
+    localStorage.setItem('favoritePokemons', JSON.stringify(Array.from(this.favorites)));
+  }
+  
+  toggleFavoritesFilter() {
+    this.showFavoritesOnly = !this.showFavoritesOnly;
+
+    let list = [...this.allPokemons];
+    const pokemonSearched = this.search.toLowerCase().trim();
+
+    if (this.showFavoritesOnly) { list = list.filter(p => this.favorites.has(p.id))}
+    if (pokemonSearched) { list = list.filter(p => p.name.includes(pokemonSearched))}
+
+    this.filteredPokemons = list;
+  }
+  
   searchByPokemon() {
     const pokemonSearched = this.search.toLowerCase().trim();
 
     if (!pokemonSearched) {
-      this.filteredPokemons = [...this.allPokemons];
+      if(!this.showFavoritesOnly){this.filteredPokemons = [...this.allPokemons]}
       this.searchError = false;
       return;
     }
@@ -71,9 +99,9 @@ export class HomePage implements OnInit{
     this.pokeapi.getPokemon(pokemonSearched).subscribe({
       next: (res) => {
         this.filteredPokemons = [{
-          id: res.id,
+          id: res.id.toString(),
           name: res.name,
-          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${res.id}.png`
+          image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${res.id}.png`,
         }];
         this.loading = false;
       },

@@ -1,6 +1,6 @@
 <ion-card class="pokemon-card">
-  <div class="pokemon-favorite-icon">
-    <ion-icon name="heart-outline" size="large"/>
+  <div class="pokemon-favorite-icon" (click)="toggle.emit(id)">
+    <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" size="large"></ion-icon>
   </div>
 
   <img [src]="image" alt="{{ name }}" class="pokemon-image" />

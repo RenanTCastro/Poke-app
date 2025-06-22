@@ -1,8 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { IonCard, IonIcon } from '@ionic/angular/standalone';
 
 import { addIcons } from 'ionicons';
-import { heartOutline } from 'ionicons/icons';
+import { heart, heartOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-card-info',
@@ -15,10 +15,12 @@ import { heartOutline } from 'ionicons/icons';
 export class CardInfoComponent {
 
   constructor (){
-    addIcons({ heartOutline });
+    addIcons({ heart, heartOutline });
   }
 
   @Input() name: string = '';
   @Input() id: string = '';
   @Input() image: string = '';
+  @Input() isFavorite: Boolean = false;
+  @Output() toggle = new EventEmitter<string>();
 }
